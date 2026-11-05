@@ -139,9 +139,12 @@ namespace UniGame.UniBuild.Editor
                 UpdateWebGLData(_arguments);
             }
 
-            PlayerSettings.bundleVersion = bundleVersion;
-            PlayerSettings.applicationIdentifier = bundleId;
-            
+            // Every PlayerSettings write requests a script compilation, even when the value is unchanged.
+            if (PlayerSettings.bundleVersion != bundleVersion)
+                PlayerSettings.bundleVersion = bundleVersion;
+            if (PlayerSettings.applicationIdentifier != bundleId)
+                PlayerSettings.applicationIdentifier = bundleId;
+
             var file   = outputFile;
             var folder = outputFolder;
             var resultArtifactPath = folder.CombinePath(file);
@@ -254,7 +257,8 @@ namespace UniGame.UniBuild.Editor
             if(arguments.GetStringValue(BuildArguments.ProductNameKey,out var branchValue))
                 productName = branchValue;
             
-            PlayerSettings.productName = productName;
+            if (PlayerSettings.productName != productName)
+                PlayerSettings.productName = productName;
         }
         
         public void UpdateArguments(IArgumentsProvider arguments)
